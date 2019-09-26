@@ -1,5 +1,5 @@
 # Turbo Consent #
-Turbo Consent is a web application developed for We The Curious, a charity based science centre based in Bristol. The application aims to enable We The Curious to efficiently handle visitors' consent on data being generated through their participation in public experiments.
+Turbo Consent is a web application developed for We The Curious, a science centre located in Bristol. The application aims to enable We The Curious to efficiently handle visitors' consent on data being generated through their participation in public experiments.
 
 ## Getting Started ##
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
