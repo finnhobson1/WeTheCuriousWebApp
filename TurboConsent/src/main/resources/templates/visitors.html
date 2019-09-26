@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visitors | Turbo Consent</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet" />
+    <!--<link href="https://fonts.googleapis.com/css?family=Raleway:500" rel="stylesheet" />-->
+    <!--<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet" />-->
+    <!--<link href="https://fonts.googleapis.com/css?family=Merriweather:700" rel="stylesheet" />-->
+    <script defer="defer" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/output.css}" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script async="async" type="text/javascript" th:src="@{/js/bulma.js}"></script>
+</head>
+<body>
+    <!-- Navigation bar start -->
+    <nav class="navbar is-dark has-shadow">
+        <div class="container">
+            <div class="navbar-brand">
+                <a th:href="@{/}" class="navbar-item">
+                    <img src="" th:src="@{/media/wtc_logo.gif}" alt="Logo" />
+                    <p id="brand-title"><strong>&ensp;&nbsp;Turbo Consent</strong></p>
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <a th:href="@{/}" class="navbar-item">
+                        Home
+                    </a>
+                    <a th:href="@{/visitors}" class="navbar-item is-active">
+                        Visitors
+                    </a>
+                    <a th:href="@{/settings}" class="navbar-item">
+                        Settings
+                    </a>
+                    <a th:href="@{/logout}" class="navbar-item has-text-danger is-hidden-tablet">
+                        Log Out
+                    </a>
+                    <span class="navbar-item is-hidden-mobile">
+                        <a th:href="@{/logout}" class="button is-danger is-inverted is-outlined">Log Out</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner start -->
+    <section class="hero is-primary is-2 is-bold">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title">
+                    Your Visitors
+                </h1>
+                <h2 class="subtitle">
+                    This section lists the profiles of the visitors you can give data consent
+                    on behalf of. Select a profile to view and submit consent levels for the experiments
+                    participated.
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <div class="box cta">
+        <p class="has-text-centered">
+            <span class="tag has-text-weight-semibold is-link">Note:</span>
+            Be responsible for your and your other
+            <span class="tooltip" data-tooltip="Visitors you can give data consent on behalf of.">Dependent Visitors'</span>
+            data rights!
+        </p>
+    </div>
+
+    <!-- Main Content start -->
+    <section class="container">
+        <div class="columns features is-multiline">
+            <div class="column is-one-third" th:each="v : ${visitors}">
+                <div class="card">
+                    <div class="card-content medium-card">
+                        <h1 class="title name-card" th:text="${v.name}"></h1>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-footer-item tiny-card">
+                            <span class="tag has-text-weight-semibold is-medium is-rounded"
+                                  th:classappend="${v.getPendingExperiments()} ? 'is-danger' : 'is-success'"
+                                  th:text="${v.getPendingExperiments()} + ' Unreviewed Exp'">
+                            </span>
+                        </div>
+                        <div class="card-footer-item has-text-centered tiny-card">
+                            <a th:href="@{/visitors/experiments(vID=${v.visitorId})}">
+                                <i class="fa fa-location-arrow"></i>&nbsp;View Experiments
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer start -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>Copyright © 2018 Turbo Consulting</p>
+                <!--<a href="#">Terms of Use</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Privacy Policy</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Accessibility</a>-->
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

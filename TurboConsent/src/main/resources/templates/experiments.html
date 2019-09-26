@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiments | Turbo Consent</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/output.css}" />
+    <script defer="defer" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/bulma.js}"></script>
+    <script type="text/javascript" th:src="@{/js/session.js}"></script>
+    <script type="text/javascript" th:src="@{/js/table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/form-validation.js}"></script>
+</head>
+<body>
+    <!-- Navigation bar start -->
+    <nav class="navbar is-dark has-shadow">
+        <div class="container">
+            <div class="navbar-brand">
+                <a th:href="@{/}" class="navbar-item">
+                    <img src="" th:src="@{/media/wtc_logo.gif}" alt="Logo" />
+                    <p id="brand-title"><strong>&ensp;&nbsp;Turbo Consent</strong></p>
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <a th:href="@{/}" class="navbar-item">
+                        Home
+                    </a>
+                    <a th:href="@{/visitors}" class="navbar-item">
+                        Visitors
+                    </a>
+                    <a th:href="@{/settings}" class="navbar-item">
+                        Settings
+                    </a>
+                    <a th:href="@{/logout}" class="navbar-item has-text-danger is-hidden-tablet">
+                        Log Out
+                    </a>
+                    <span class="navbar-item is-hidden-mobile">
+                        <a th:href="@{/logout}" class="button is-danger is-inverted is-outlined">Log Out</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner start -->
+    <section class="hero is-info is-2 is-bold">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title" th:text="${visitorName} + '\'s Experiments'">
+                    Your Experiments
+                </h1>
+                <h2 class="subtitle">
+                    Review or update Consent Level of the experiments. You can toggle between Unreviewed/Reviewed
+                    Experiments by clicking on the switch.
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <div class="box cta">
+       <p class="has-text-centered" th:inline="text">
+            <span class="tag has-text-weight-semibold is-warning">Note:</span>
+            &nbsp;[[${visitorName}]]'s Default Consent Level is <strong>[[${defaultConsent.name}]]</strong>. This will be applied
+            automatically to all new experiments.
+        </p>
+    </div>
+
+    <!-- Update Notification start-->
+    <div class="notification is-danger has-text-centered error-flag" th:classappend="${updateFailure} ? '' : 'is-hidden'">
+        <p>Sorry, an error occurred! Please try again.</p>
+        <button class="delete is-medium close-danger"></button>
+    </div>
+
+    <div class="notification is-success has-text-centered success-flag" th:classappend="${updateSuccess} ? '' : 'is-hidden'">
+        <p>Changes saved successfully!</p>
+        <button class="delete is-medium close-success"></button>
+    </div>
+
+    <!-- Main Content start -->
+    <div class="modal">
+        <div class="modal-background close-modal"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-weight-semibold is-size-3-desktop">Consent Level Options</p>
+                <button class="delete is-medium close-modal is-hidden-mobile" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <ul class="modal-list has-text-left is-size-5-desktop">
+                        <li><p>
+                            <strong>Full Consent:</strong> You agree to allow WTC and the researchers involved in this experiment to view and use your experiment results and your details.
+                        </p></li>
+                        <li><p>
+                            <strong>No Consent:</strong> You do not agree to allow anyone to view or use your experiment results or any of your details.
+                        </p></li>
+                        <li><p>
+                            <em><strong class="has-text-danger">Note:</strong> Every experiment has specific consent
+                                levels which can be given when viewed individually.</em>
+                        </p></li>
+                        <li th:if="${false}"><p>
+                            <strong>Anonymous:</strong> Only your results will be given, your identity will be hidden.
+                        </p></li>
+                        <li th:if="${false}"><p>
+                            <strong>Custom Consent:</strong> Custom set consent option, can be configured in
+                            <a th:href="@{/settings}">Settings</a>.
+                        </p></li>
+                    </ul>
+                </div>
+                <hr />
+                <div id="ok-close" class="content has-text-centered close-modal">
+                    <a class="is-size-4 is-size-5-mobile">OK</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="field">
+            <input id="t-switch" type="checkbox" class="switch is-medium is-warning is-rounded" />
+            <label for="t-switch"></label>
+            <label class="current-table is-size-3 is-size-4-touch">Unreviewed Experiments</label>
+        </div>
+
+        <form class="consent-pending" th:action="@{/visitors/experiments/toReviewed(vID=${vID})}" th:method="post">
+            <button class="button is-outlined is-danger move-all" type="submit" th:attrappend="disabled=${#lists.isEmpty(visitorExps.?[not changedConsent])} ? true : false">Review All</button>
+        </form>
+
+        <!--<div class="field is-hidden-tablet">-->
+            <!--<input id="t-switch-m" type="checkbox" class="switch is-warning is-rounded" />-->
+            <!--<label for="t-switch-m"></label>-->
+            <!--<label class="current-table-m is-size-4">Consent-Pending Experiments</label>-->
+        <!--</div>-->
+
+        <form class="consent-pending" th:action="@{/visitors/experiments/updateConsent(vID=${vID})}" th:method="post" th:with="pending = ${visitorExps.?[not changedConsent]}">
+            <div class="columns is-hidden-tablet">
+                <div class="column has-text-left">
+                    <a class="is-outlined is-primary button toggle-p is-hidden-tablet" th:attrappend="disabled=${#lists.isEmpty(pending)} ? true : false">Select All</a>
+                </div>
+            </div>
+
+            <div class="card is-hidden-tablet mobile-exp" th:each="visitorExp : ${pending}">
+                <div class="card-content medium-card">
+                    <p class="subtitle tiny-subtitle has-text-weight-semibold" th:text="${visitorExp.experiment.name}">Physics Experiment With An Extremely Long Title</p>
+                    <p>Date: <span class="has-text-grey-dark" th:text="${#dates.format(visitorExp.date, 'dd/MM/YYYY')}">6/4/2018</span></p>
+                    <p>Status: <span class="has-text-success has-text-weight-semibold" th:text="${visitorExp.consentOption.name}">Pending Consent</span></p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-footer-item tiny-card">
+                        <input th:id="${visitorExp.compoundKey}" class="is-checkradio is-block is-primary pending" type="checkbox" name="selected" th:value="${visitorExp.experiment.id}" />
+                        <label class="tiny-label" th:for="${visitorExp.compoundKey}">
+                            Select
+                        </label>
+                    </div>
+                    <div class="card-footer-item tiny-card">
+                        <a class="tiny-a" th:href="@{/visitors/experiments/experiment(vID=${vID}, eID=${visitorExp.experiment.id})}"><i class="fa fa-location-arrow"></i>&nbsp;View Experiment</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card is-hidden-tablet mobile-exp" th:if="${#lists.isEmpty(pending)}">
+                <div class="card-content medium-card">
+                    <p class="subtitle title has-text-weight-semibold">No Experiments To Show</p>
+                </div>
+            </div>
+
+            <table class="features table is-hoverable is-fullwidth is-striped is-hidden-mobile">
+                <tbody class="tbody">
+                    <tr>
+                        <th class="hentry is-size-6"><a class="button toggle-p is-hidden-mobile" th:attrappend="disabled=${#lists.isEmpty(pending)} ? true : false">Select All</a></th>
+                        <th class="hentry is-size-6">Experiment Title</th>
+                        <th class="hentry is-size-6">Experiment Date</th>
+                        <th class="hentry is-size-6">Consent Status</th>
+                    </tr>
+
+                    <tr th:each="visitorExp : ${pending}">
+                        <td class="dentry is-size-6"><input class="pending" type="checkbox" name="selected" th:value="${visitorExp.experiment.id}" /></td>
+                        <td class="dentry is-size-6"><a th:href="@{/visitors/experiments/experiment(vID=${vID}, eID=${visitorExp.experiment.id})}" th:text="${visitorExp.experiment.name}">Physics Experiment</a></td>
+                        <td class="dentry is-size-6" th:text="${#dates.format(visitorExp.date, 'dd/MM/YYYY')}">19/3/2018</td>
+                        <td class="dentry is-size-6 has-text-success has-text-weight-semibold" th:text="${visitorExp.consentOption.name}">Pending</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(pending)}">
+                        <td class="dentry has-text-centered is-size-6" colspan="4">No Experiments To Show.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="box exp-options">
+                <h1 class="subtitle">
+                    Update Consent Level For <span id="p-selected"></span> Experiment(s)&nbsp;
+                    <a class="open-modal"><i class="fa fa-question-circle"></i></a>
+                </h1>
+                <ul>
+                    <li>
+                        <label class="radio"><input type="radio" name="consentLevel" value="Full Consent" />&nbsp;Full Consent</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="consentLevel" value="No Consent" />&nbsp;No Consent</label>
+                    </li>
+                    <li>
+                        <label class="radio" th:if="${false}"><input type="radio" name="consentLevel" value="3" />&nbsp;Custom Consent</label>
+                    </li>
+                    <li>
+                        <label class="radio" th:if="${false}"><input type="radio" name="consentLevel" value="Anonymous" />&nbsp;Anonymous</label>
+                    </li>
+                </ul>
+                <br />
+                <button type="submit" class="button is-link is-outlined bulk-submit">Apply Consent Option</button>
+            </div>
+        </form>
+
+        <form class="reviewed is-hidden" th:action="@{/visitors/experiments/updateConsent(vID=${vID})}" th:method="post" th:with="reviewed = ${visitorExps.?[changedConsent]}">
+            <div class="columns is-hidden-tablet">
+                <div class="column has-text-left">
+                    <a class="is-outlined is-primary button toggle-r is-hidden-tablet" th:attrappend="disabled=${#lists.isEmpty(reviewed)} ? true : false">Select All</a>
+                </div>
+            </div>
+
+            <div class="card is-hidden-tablet mobile-exp" th:each="visitorExp : ${reviewed}">
+                <div class="card-content medium-card">
+                    <p class="subtitle tiny-subtitle has-text-weight-semibold" th:text="${visitorExp.experiment.name}">Physics Experiment With An Extremely Long Title</p>
+                    <p>Date: <span class="has-text-grey-dark" th:text="${#dates.format(visitorExp.date, 'dd/MM/YYYY')}">6/4/2018</span></p>
+                    <p>Status: <span class="has-text-success has-text-weight-semibold" th:text="${visitorExp.consentOption.name}">Not Pending Consent</span></p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-footer-item tiny-card">
+                        <input th:id="${visitorExp.compoundKey}" class="is-checkradio is-block is-primary rev" type="checkbox" name="selected" th:value="${visitorExp.experiment.id}" />
+                        <label class="tiny-label" th:for="${visitorExp.compoundKey}">
+                            Select
+                        </label>
+                    </div>
+                    <div class="card-footer-item tiny-card">
+                        <a class="tiny-a" th:href="@{/visitors/experiments/experiment(vID=${vID}, eID=${visitorExp.experiment.id})}"><i class="fa fa-location-arrow"></i>&nbsp;View Experiment</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card is-hidden-tablet mobile-exp" th:if="${#lists.isEmpty(reviewed)}">
+                <div class="card-content medium-card">
+                    <p class="subtitle title has-text-weight-semibold">No Experiments To Show</p>
+                </div>
+            </div>
+
+            <table class="features table is-hoverable is-fullwidth is-striped is-hidden-mobile">
+                <!--<thead class="thead">-->
+                    <!--<nav class="breadcrumb is-large" aria-label="breadcrumbs">-->
+                        <!--<ul>-->
+                            <!--<li><a>Consent-Pending Experiments</a></li>-->
+                            <!--<li class="is-active"><a>Reviewed Experiments</a></li>-->
+                        <!--</ul>-->
+                    <!--</nav>-->
+                <!--</thead>-->
+                <tbody class="tbody">
+                    <tr>
+                        <th class="hentry is-size-6"><a class="button toggle-r is-hidden-mobile" th:attrappend="disabled=${#lists.isEmpty(reviewed)} ? true : false">Select All</a></th>
+                        <th class="hentry is-size-6">Experiment Title</th>
+                        <th class="hentry is-size-6">Experiment Date</th>
+                        <th class="hentry is-size-6">Consent Status</th>
+                    </tr>
+
+                    <tr th:each="visitorExp : ${reviewed}">
+                        <td class="dentry is-size-6"><input class="rev" type="checkbox" name="selected" th:value="${visitorExp.experiment.id}" /></td>
+                        <td class="dentry is-size-6"><a th:href="@{/visitors/experiments/experiment(vID=${vID}, eID=${visitorExp.experiment.id})}" th:text="${visitorExp.experiment.name}">Physics Experiment</a></td>
+                        <td class="dentry is-size-6" th:text="${#dates.format(visitorExp.date, 'dd/MM/YYYY')}">19/3/2018</td>
+                        <td class="dentry is-size-6 has-text-success has-text-weight-semibold" th:text="${visitorExp.consentOption.name}">Not Pending</td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(reviewed)}">
+                        <td class="dentry has-text-centered is-size-6" colspan="4">No Experiments To Show.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="box exp-options">
+                <h1 class="subtitle">
+                    Update Consent Level For <span id="r-selected"></span> Experiment(s)&nbsp;
+                    <a class="open-modal"><i class="fa fa-question-circle"></i></a>
+                </h1>
+                <ul>
+                    <li>
+                        <label class="radio"><input type="radio" name="consentLevel" value="Full Consent" />&nbsp;Full Consent</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="consentLevel" value="No Consent" />&nbsp;No Consent</label>
+                    </li>
+                </ul>
+                <br />
+                <button type="submit" class="button is-link is-outlined bulk-submit">Apply Consent Option</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Footer start -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>Copyright © 2018 Turbo Consulting</p>
+                <!--<a href="#">Terms of Use</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Privacy Policy</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Accessibility</a>-->
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

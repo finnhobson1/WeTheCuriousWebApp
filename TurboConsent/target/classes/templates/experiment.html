@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiment | Turbo Consent</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/output.css}" />
+    <script defer="defer" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/bulma.js}"></script>
+    <script type="text/javascript" th:src="@{/js/form-validation.js}"></script>
+</head>
+<body>
+    <!-- Navigation bar start -->
+    <nav class="navbar is-dark has-shadow">
+        <div class="container">
+            <div class="navbar-brand">
+                <a th:href="@{/}" class="navbar-item">
+                    <img src="" th:src="@{/media/wtc_logo.gif}" alt="Logo" />
+                    <p id="brand-title"><strong>&ensp;&nbsp;Turbo Consent</strong></p>
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <a th:href="@{/}" class="navbar-item">
+                        Home
+                    </a>
+                    <a th:href="@{/visitors}" class="navbar-item">
+                        Visitors
+                    </a>
+                    <a th:href="@{/settings}" class="navbar-item">
+                        Settings
+                    </a>
+                    <a th:href="@{/logout}" class="navbar-item has-text-danger is-hidden-tablet">
+                        Log Out
+                    </a>
+                    <span class="navbar-item is-hidden-mobile">
+                        <a th:href="@{/logout}" class="button is-danger is-inverted is-outlined">Log Out</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner start -->
+    <section class="hero is-link is-2 is-bold">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title" th:inline="text">
+                    [[${visitorExp.experiment.name}]] by [[${visitorName}]]
+                </h1>
+                <h2 class="subtitle">
+                    View the detailed description of individual experiment and update its Consent Level.
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content start -->
+    <div class="modal">
+        <div class="modal-background close-modal"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-weight-semibold is-size-3-desktop">Consent Level Options</p>
+                <button class="delete is-medium close-modal is-hidden-mobile" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <ul class="modal-list has-text-left is-size-5-desktop">
+                        <li><p>
+                            <strong>Full Consent:</strong> All your experiments' results will be given to We The Curious.
+                        </p></li>
+                        <li><p>
+                            <strong>No Consent:</strong> The experiment results will not be submitted.
+                        </p></li>
+                        <li><p>
+                            <em><strong class="has-text-danger">Note:</strong> Every experiment has specific consent
+                                levels which can be given when viewed individually.</em>
+                        </p></li>
+                    </ul>
+                </div>
+                <hr />
+                <div class="content has-text-centered close-modal" id="ok-close">
+                    <a class="is-size-4 is-size-5-mobile">OK</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Main Content start -->
+    <section class="section">
+        <div class="box feature">
+            <div class="content">
+                <h1 class="tiny-subtitle is-size-4">
+                    Experiment Description
+                </h1>
+                <p class="has-text-grey" th:text="${visitorExp.experiment.description}">desc here</p>
+                <h1 class="tiny-subtitle is-size-4">
+                    Date Participated
+                </h1>
+                <p class="has-text-grey" th:text="${#dates.format(visitorExp.date, 'dd/MM/YYYY')}">date here</p>
+                <h1 class="tiny-subtitle is-size-4">
+                    Consent Level Descriptions
+                </h1>
+                <ul class="left-align-list">
+                    <li th:each="cco : ${customConsentOptions}" th:inline="text">
+                        <p class="has-text-grey">
+                            <span class="has-text-weight-semibold">[[${cco.name}]]: </span>[[${cco.description}]]
+                        </p>
+                    </li>
+                </ul>
+                <h1 class="tiny-subtitle is-size-4">
+                    Current Consent Level
+                </h1>
+                <p class="has-text-success has-text-weight-semibold" th:text="${visitorExp.consentOption.name}">current consent level</p>
+            </div>
+
+            <hr />
+
+            <form th:action="@{/visitor/experiments/experiment/updateConsent(vID=${vID}, eID=${eID})}" th:method="post">
+                <h1 class="subtitle">
+                    Update Consent Level For Experiment&nbsp;
+                    <a class="open-modal"><i class="fa fa-question-circle"></i></a>
+                </h1>
+                <ul>
+                    <li th:each="cco : ${customConsentOptions}">
+                        <label class="radio" th:inline="text">
+                            <input type="radio" name="consentLevel" th:value="${cco.name}" />&nbsp;[[${cco.name}]]
+                        </label>
+                    </li>
+                </ul>
+                <br />
+                <button type="submit" class="button is-link is-outlined single-submit">Apply Consent Option</button>
+            </form>
+        </div>
+        <a class="back has-text-danger">Back to Experiments</a>
+    </section>
+
+    <!-- Footer start -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>Copyright © 2018 Turbo Consulting</p>
+                <!--<a href="#">Terms of Use</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Privacy Policy</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Accessibility</a>-->
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

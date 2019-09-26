@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home | Turbo Consent</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/output.css}" />
+    <script defer="defer" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/bulma.js}"></script>
+</head>
+<body>
+    <!-- Navigation bar start -->
+    <nav class="navbar is-dark has-shadow">
+        <div class="container">
+            <div class="navbar-brand">
+                <a th:href="@{/}" class="navbar-item">
+                    <img src="" th:src="@{/media/wtc_logo.gif}" alt="Logo" />
+                    <p id="brand-title"><strong>&ensp;&nbsp;Turbo Consent</strong></p>
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <a th:href="@{/}" class="navbar-item is-active">
+                        Home
+                    </a>
+                    <a th:href="@{/visitors}" class="navbar-item">
+                        Visitors
+                    </a>
+                    <a th:href="@{/settings}" class="navbar-item">
+                        Settings
+                    </a>
+                    <a th:href="@{/logout}" class="navbar-item has-text-danger is-hidden-tablet">
+                        Log Out
+                    </a>
+                    <span class="navbar-item is-hidden-mobile">
+                        <a th:href="@{/logout}" class="button is-danger is-inverted is-outlined">Log Out</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner start -->
+    <section class="hero is-warning is-2 is-bold">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title">
+                    Welcome to Turbo Consent!
+                </h1>
+                <h2 class="subtitle">
+                    Together with We The Curious, we make sure your data are consented
+                    before being used in research. Navigate to <a class="has-text-link" th:href="@{/visitors}">Visitors</a>
+                    to start reviewing your experiments.
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <div class="box cta has-text-centered" th:inline="text">
+        <p th:if="${experimentsPending gt 0}">
+            <span class="tag has-text-weight-semibold is-danger">New !</span>
+            &nbsp;You have a total of [[${experimentsPending}]] Unreviewed Experiment(s), check them out under the
+            <a class="has-text-link" th:href="@{/visitors}">Visitors</a> section now&nbsp;!
+        </p>
+
+        <p th:if="${experimentsPending == 0}">
+            <span class="tag has-text-weight-semibold is-success">Note:</span>
+            &nbsp;You have reviewed all of your experiments. A huge thank you from us and the researchers from
+            We The Curious!
+        </p>
+    </div>
+
+    <!-- Main Content start -->
+    <section class="container">
+        <div class="columns features">
+            <div class="column is-4">
+                <div class="card">
+                    <div class="card-image has-text-centered">
+                        <i class="sicon fa fa-user" id="user"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="content">
+                            <h4>Visitors</h4>
+                            <p>
+                                Section containing all the Dependent Visitors
+                                <em>(visitors you can give consent on behalf of)</em> of your
+                                account and all their experiments.
+                            </p>
+                            <p>
+                                <a th:href="@{/visitors}"><i class="fa fa-location-arrow"></i>&nbsp;Go to Visitors!</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column is-4">
+                <div class="card">
+                    <div class="card-image has-text-centered">
+                        <i class="sicon fas fa-cog" id="settings"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="content">
+                            <h4>Settings</h4>
+                            <p>
+                                Change your account settings including setting up Consent Defaults
+                                <em>(automatically apply set consent options to all new experiments)</em>
+                                for each <span class="tooltip" data-tooltip="Visitors you can give data consent on behalf of.">Dependent Visitor</span>.
+                            </p>
+                            <p>
+                                <a th:href="@{/settings}"><i class="fa fa-location-arrow"></i>&nbsp;Go to Settings!</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column is-4">
+                <div class="card">
+                    <div class="card-image has-text-centered">
+                        <i class="sicon fa fa-rocket" id="wtc"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="content">
+                            <h4>Keep up with new events!</h4>
+                            <p>
+                                EXPLORE, DISCOVER &amp; EXPERIENCE SCIENCE! Check out new exciting
+                                happenings in We The Curious Bristol which may spark your interests!
+                            </p>
+                            <p>
+                                <a href="https://www.wethecurious.org/"><i class="fa fa-location-arrow"></i>&nbsp;Find out more!</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer start -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>Copyright © 2018 Turbo Consulting</p>
+                <!--<a href="#">Terms of Use</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Privacy Policy</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Accessibility</a>-->
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

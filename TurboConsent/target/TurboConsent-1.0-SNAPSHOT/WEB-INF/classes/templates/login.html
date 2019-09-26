@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | Turbo Consent</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/output.css}" />
+    <script defer="defer" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/bulma.js}"></script>
+</head>
+<body>
+    <!-- Navigation bar start -->
+    <nav class="navbar is-dark has-shadow">
+        <div class="container">
+            <div class="navbar-brand">
+                <a th:href="@{/login}" class="navbar-item">
+                    <img th:src="@{/media/wtc_logo.gif}" alt="Logo" />
+                    <p id="brand-title"><strong>&ensp;&nbsp;Turbo Consent</strong></p>
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <a href="https://www.wethecurious.org/" class="navbar-item">
+                        We The Curious Website&ensp;<i class="is-size-4 fa fa-angle-double-right is-hidden-mobile"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login start -->
+    <section class="hero is-white is-fullheight">
+        <div class="hero-body" style="background-image: url('media/wethecurious.jpg'); background-size: cover;">
+            <div class="container has-text-centered" style="max-width:450px">
+                <div class="box" style="opacity:0.95">
+                    <p class="title is-3 has-text-grey-dark">Login</p>
+                    <p class="subtitle has-text-grey" style="margin-top:-45px">Please login to proceed.</p>
+                    <form name="Login" action="#" th:action="@{/login}" method="POST">
+                        <div th:if="${param.error}" class="alert alert-error">
+                            Invalid username and password.
+                        </div>
+                        <div class="field">
+                            <div class="control has-icons-left" data-validate="Email is required">
+                                <input class="input is-medium" type="text" id="username" name="username" placeholder="We The Curious Email" autofocus="" />
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control has-icons-left" data-validate="Email is required">
+                                <!--<input class="input is-medium" type="password" th:field="*{pword}" placeholder="Password" />-->
+                                <input class="input is-medium" type="password" id="password" name="password" placeholder="Password" />
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-lock"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="checkbox">
+                                <input type="checkbox" />
+                                Remember Me
+                            </label>
+                        </div>
+                        <button class="button is-block is-info is-medium is-fullwidth">Login</button>
+                    </form>
+                </div>
+
+                <p class="has-text-white-ter">
+                    <a href="#">Sign Up</a> &nbsp;·&nbsp;
+                    <a href="#">Forgot Password</a> &nbsp;·&nbsp;
+                    <a href="#">Need Help?</a>
+                </p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Settings | Turbo Consent</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/output.css}" />
+    <script defer="defer" src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/bulma.js}"></script>
+    <script type="text/javascript" th:src="@{/js/table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/form-validation.js}"></script>
+</head>
+<body>
+    <!-- Navigation bar start -->
+    <nav class="navbar is-dark has-shadow">
+        <div class="container">
+            <div class="navbar-brand">
+                <a th:href="@{/}" class="navbar-item">
+                    <img src="" th:src="@{/media/wtc_logo.gif}" alt="Logo" />
+                    <p id="brand-title"><strong>&ensp;&nbsp;Turbo Consent</strong></p>
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <a th:href="@{/}" class="navbar-item">
+                        Home
+                    </a>
+                    <a th:href="@{/visitors}" class="navbar-item">
+                        Visitors
+                    </a>
+                    <a th:href="@{/settings}" class="navbar-item is-active">
+                        Settings
+                    </a>
+                    <a th:href="@{/logout}" class="navbar-item has-text-danger is-hidden-tablet">
+                        Log Out
+                    </a>
+                    <span class="navbar-item is-hidden-mobile">
+                        <a th:href="@{/logout}" class="button is-danger is-inverted is-outlined">Log Out</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner start -->
+    <section class="hero is-warning is-2 is-limey">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title">
+                    Settings
+                </h1>
+                <h2 class="subtitle">
+                    Change each visitor's Default Consent Level here. The set consent option will be applied to
+                    any new experiments participated.
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <div class="box cta">
+        <p class="has-text-centered">
+            <span class="tag has-text-weight-semibold is-info">Note:</span>
+            &nbsp;Changing the Default Consent Level will not affect consent level of any participated experiment.
+        </p>
+    </div>
+
+    <!-- Update Notification start-->
+    <div class="notification is-danger has-text-centered error-flag" th:classappend="${updateFailure} ? '' : 'is-hidden'">
+        <p>Sorry, an error occurred! Please try again.</p>
+        <button class="delete is-medium close-danger"></button>
+    </div>
+
+    <div class="notification is-success has-text-centered success-flag" th:classappend="${updateSuccess} ? '' : 'is-hidden'">
+        <p>Changes saved successfully!</p>
+        <button class="delete is-medium close-success"></button>
+    </div>
+
+    <!-- Main Content start -->
+    <div class="modal">
+        <div class="modal-background close-modal"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-weight-semibold is-size-3-desktop">Consent Level Options</p>
+                <button class="delete is-medium close-modal is-hidden-mobile" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="content">
+                    <ul class="modal-list has-text-left is-size-5-desktop">
+                        <li><p>
+                            <strong>Full Consent:</strong> All your experiments' results will be given to We The Curious.
+                        </p></li>
+                        <li><p>
+                            <strong>No Consent:</strong> The experiment results will not be submitted.
+                        </p></li>
+                        <li><p>
+                            <em><strong class="has-text-danger">Note:</strong> Every experiment has specific consent
+                                levels which can be given when viewed individually.</em>
+                        </p></li>
+                    </ul>
+                </div>
+                <hr />
+                <div id="ok-close" class="content has-text-centered close-modal">
+                    <a class="is-size-4 is-size-5-mobile">OK</a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="field">
+            <h1 class="is-size-3 is-size-4-touch">
+                Your Dependent Visitors
+            </h1>
+        </div>
+
+        <form class="dependent-visitors" th:action="@{/settings/updateConsent}" th:method="post">
+            <div class="columns is-hidden-tablet">
+                <div class="column has-text-left">
+                    <a class="is-outlined is-primary button toggle-v is-hidden-tablet" th:attrappend="disabled=${#lists.isEmpty(visitors)} ? true : false">Select All</a>
+                </div>
+            </div>
+
+            <div class="card is-hidden-tablet mobile-exp" th:each="v : ${visitors}">
+                <div class="card-content medium-card">
+                    <p class="subtitle tiny-subtitle has-text-weight-semibold" th:text="${v.name}">Visitor Name</p>
+                    <p>Default Consent Level: <em class="has-text-success" th:text="${v.defaultConsent.name}">Consent Level</em></p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-footer-item tiny-card">
+                        <input th:id="${v.visitorId}" class="is-checkradio is-block is-primary visitor" type="checkbox" name="vSelected" th:value="${v.visitorId}" />
+                        <label class="tiny-label" th:for="${v.visitorId}">
+                            Select
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card is-hidden-tablet mobile-exp" th:if="${#lists.isEmpty(visitors)}">
+                <div class="card-content medium-card">
+                    <p class="subtitle title has-text-weight-semibold">No Visitors To Show</p>
+                </div>
+            </div>
+
+            <table class="features table is-hoverable is-fullwidth is-striped is-hidden-mobile">
+                <tbody class="tbody">
+                <tr>
+                    <th class="hentry is-size-6"><a class="button toggle-v" th:attrappend="disabled=${#lists.isEmpty(visitors)} ? true : false">Select All</a></th>
+                    <th class="hentry is-size-6">Visitor Name</th>
+                    <th class="hentry is-size-6">Default Consent Level</th>
+                </tr>
+
+                <tr th:each="v : ${visitors}">
+                    <td class="dentry is-size-6"><input class="visitor" type="checkbox" name="vSelected" th:value="${v.visitorId}" /></td>
+                    <td class="dentry is-size-6" th:text="${v.name}">Physics Experiment</td>
+                    <td class="dentry is-size-6" th:text="${v.defaultConsent.name}">Consent</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(visitors)}">
+                    <td class="dentry has-text-centered is-size-6" colspan="4">No Visitors To Show.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="box exp-options">
+                <h1 class="subtitle">
+                    Update Default Consent Level For <span id="v-selected"></span> Visitor(s)&nbsp;
+                    <a class="open-modal"><i class="fa fa-question-circle"></i></a>
+                </h1>
+                <ul>
+                    <li>
+                        <label class="radio"><input type="radio" name="dConsentLevel" value="Full Consent" />&nbsp;Full Consent</label>
+                    </li>
+                    <li>
+                        <label class="radio"><input type="radio" name="dConsentLevel" value="No Consent" />&nbsp;No Consent</label>
+                    </li>
+                </ul>
+                <br />
+                <button type="submit" class="button is-link is-outlined visitor-submit">Apply Consent Option</button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Footer start -->
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>Copyright © 2018 Turbo Consulting</p>
+                <!--<a href="#">Terms of Use</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Privacy Policy</a> &nbsp;·&nbsp;-->
+                <!--<a href="#">Accessibility</a>-->
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
